@@ -12,7 +12,7 @@ module.exports = {
             max_memory_restart: "8G", // Restart if it exceeds 1GB of memory
             env: {
                 NODE_ENV: "production",
-                PORT: 5090,
+                PORT: 5091,
             },
         },
     ],
