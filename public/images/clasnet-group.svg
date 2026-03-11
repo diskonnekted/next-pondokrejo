@@ -1,6 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="560" height="120" viewBox="0 0 560 120" role="img" aria-label="Clasnet Group">
-  <rect width="560" height="120" fill="white"/>
-  <g fill="#111827">
-    <text x="280" y="70" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="44" font-weight="700">CLASNET GROUP</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="520" viewBox="0 0 800 520" role="img" aria-label="Clasnet Group">
+  <rect width="800" height="520" fill="white" />
+  <g>
+    <circle cx="456" cy="165" r="118" fill="none" stroke="#e11d24" stroke-width="26" />
+    <circle cx="575" cy="165" r="22" fill="#1f2a8a" />
+    <g fill="none" stroke="#1f2a8a" stroke-linecap="round">
+      <path d="M305 140 C360 95 455 80 535 105" stroke-width="18" />
+      <path d="M295 170 C355 125 455 115 545 140" stroke-width="18" />
+      <path d="M305 205 C365 165 460 155 525 175" stroke-width="18" />
+      <path d="M300 132 C290 142 288 152 296 160" stroke-width="18" />
+      <path d="M288 162 C278 172 276 184 286 192" stroke-width="18" />
+      <path d="M300 198 C290 208 288 218 296 226" stroke-width="18" />
+    </g>
+  </g>
+  <g fill="#000000" font-family="Arial, Helvetica, sans-serif" font-weight="800">
+    <text x="400" y="380" text-anchor="middle" font-size="112" font-style="italic" letter-spacing="2">CLASNET</text>
+    <text x="400" y="465" text-anchor="middle" font-size="92" font-style="italic" letter-spacing="2">.GROUP</text>
   </g>
 </svg>
