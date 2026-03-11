@@ -61,5 +61,5 @@ Portal Pondokrejo tidak melakukan pengumpulan, perekaman, maupun penyimpanan dat
 - [AUDIT_FIX_LATEST.md](file:///d:/xampp/htdocs/audit-pondokrejo/next-pondokrejo/AUDIT_FIX_LATEST.md)
 
 <p align="center">
-  <img src="public/images/clasnet-group.svg" width="220" alt="Clasnet Group" />
+  <img src="public/images/clasnet-group.svg" width="140" alt="Clasnet Group" />
 </p>
