@@ -7,6 +7,7 @@ import {
     createApiNextResponse,
     createCorsNextResponse,
     withErrorHandling,
+    CORS_HEADERS,
 } from "./api-service";
 
 /**
@@ -256,11 +257,11 @@ export function createApiRouteHandler(
             return withErrorHandling(async () => {
                 const response = await handler(request);
                 if (enableCORS) {
-                    // Check if response has .data property (ApiResponse) or is just NextResponse
-                    if ("data" in response) {
-                        return createApiNextResponse(response as unknown as { success: boolean; data?: unknown }, { addCorsHeaders: true });
-                    }
-                    return response;
+                    try {
+                        response.headers.set("Access-Control-Allow-Origin", CORS_HEADERS["Access-Control-Allow-Origin"]);
+                        response.headers.set("Access-Control-Allow-Methods", CORS_HEADERS["Access-Control-Allow-Methods"]);
+                        response.headers.set("Access-Control-Allow-Headers", CORS_HEADERS["Access-Control-Allow-Headers"]);
+                    } catch {}
                 }
                 return response;
             });
@@ -270,10 +271,11 @@ export function createApiRouteHandler(
             return withErrorHandling(async () => {
                 const response = await handler(request);
                 if (enableCORS) {
-                    if ("data" in response) {
-                        return createApiNextResponse(response as unknown as { success: boolean; data?: unknown }, { addCorsHeaders: true });
-                    }
-                    return response;
+                    try {
+                        response.headers.set("Access-Control-Allow-Origin", CORS_HEADERS["Access-Control-Allow-Origin"]);
+                        response.headers.set("Access-Control-Allow-Methods", CORS_HEADERS["Access-Control-Allow-Methods"]);
+                        response.headers.set("Access-Control-Allow-Headers", CORS_HEADERS["Access-Control-Allow-Headers"]);
+                    } catch {}
                 }
                 return response;
             });
@@ -283,10 +285,11 @@ export function createApiRouteHandler(
             return withErrorHandling(async () => {
                 const response = await handler(request);
                 if (enableCORS) {
-                    if ("data" in response) {
-                        return createApiNextResponse(response as unknown as { success: boolean; data?: unknown }, { addCorsHeaders: true });
-                    }
-                    return response;
+                    try {
+                        response.headers.set("Access-Control-Allow-Origin", CORS_HEADERS["Access-Control-Allow-Origin"]);
+                        response.headers.set("Access-Control-Allow-Methods", CORS_HEADERS["Access-Control-Allow-Methods"]);
+                        response.headers.set("Access-Control-Allow-Headers", CORS_HEADERS["Access-Control-Allow-Headers"]);
+                    } catch {}
                 }
                 return response;
             });
@@ -296,10 +299,11 @@ export function createApiRouteHandler(
             return withErrorHandling(async () => {
                 const response = await handler(request);
                 if (enableCORS) {
-                    if ("data" in response) {
-                        return createApiNextResponse(response as unknown as { success: boolean; data?: unknown }, { addCorsHeaders: true });
-                    }
-                    return response;
+                    try {
+                        response.headers.set("Access-Control-Allow-Origin", CORS_HEADERS["Access-Control-Allow-Origin"]);
+                        response.headers.set("Access-Control-Allow-Methods", CORS_HEADERS["Access-Control-Allow-Methods"]);
+                        response.headers.set("Access-Control-Allow-Headers", CORS_HEADERS["Access-Control-Allow-Headers"]);
+                    } catch {}
                 }
                 return response;
             });

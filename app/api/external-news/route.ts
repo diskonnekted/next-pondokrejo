@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { fetchLocalAPI } from "@/lib/api-helpers";
+import { fetchLocalAPI, createApiRouteHandler } from "@/lib/api-helpers";
 
 // Type definitions for OpenSID article structure
 interface OpenSIDAuthor {
@@ -248,7 +248,7 @@ function parseOpenSIDDate(dateStr: string): string {
     ).toISOString();
 }
 
-export async function GET() {
+export const { GET, OPTIONS } = createApiRouteHandler(async () => {
     try {
         // Use the new consolidated API service
         const response = await fetchLocalAPI("/api/opensid-berita", {
@@ -325,4 +325,4 @@ export async function GET() {
             { status: 500 }
         );
     }
-}
+});

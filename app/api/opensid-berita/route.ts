@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 // import { fetchOpenSIDArsip } from "@/lib/api-helpers"; // Commented as unused
 import { env } from "process";
+import { createApiRouteHandler } from "@/lib/api-helpers";
 
 // Type definitions for OpenSID article structure
 interface OpenSIDArticle {
@@ -21,7 +22,7 @@ function transformToHTTPS(html: string): string {
     return html.replace(/http:\/\//gi, "https://");
 }
 
-export async function GET(request: NextRequest) {
+export const { GET, OPTIONS } = createApiRouteHandler(async (request: NextRequest) => {
     try {
         const { searchParams } = new URL(request.url);
         const kategori = searchParams.get("kategori");
@@ -110,4 +111,4 @@ export async function GET(request: NextRequest) {
     } catch (error) {
         return NextResponse.json({ error: `Internal server error: ${error}` }, { status: 500 });
     }
-}
+});

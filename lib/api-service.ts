@@ -36,7 +36,7 @@ const DEFAULT_CONFIG: Required<Omit<ApiConfig, "baseUrl" | "cache">> = {
 };
 
 // Common CORS headers
-const CORS_HEADERS = {
+export const CORS_HEADERS = {
     "Access-Control-Allow-Origin": process.env.CORS_ORIGIN || process.env.NEXT_PUBLIC_SITE_URL || "https://pondokrejo.clasnet.co.id",
     "Access-Control-Allow-Methods": "GET, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",

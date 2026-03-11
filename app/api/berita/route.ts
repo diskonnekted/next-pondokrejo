@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 import type { ApiResponse } from "@/lib/api-response";
 import { createSuccessResponse, createErrorResponse, createValidationErrorResponse } from "@/lib/api-response";
+import { createApiRouteHandler } from "@/lib/api-helpers";
 
 // Mock data for berita (will be replaced with database queries)
 const mockBerita = [
@@ -54,54 +55,38 @@ const mockBerita = [
     },
 ];
 
-export async function GET(request: NextRequest): Promise<NextResponse<ApiResponse>> {
-    try {
-        const { searchParams } = new URL(request.url);
-        const page = parseInt(searchParams.get("halaman") ?? "1");
-        const limit = parseInt(searchParams.get("limit") ?? "10");
-        const kategori = searchParams.get("kategori");
-        const search = searchParams.get("search");
+export const { GET } = createApiRouteHandler(async (request: NextRequest) => {
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get("halaman") ?? "1");
+    const limit = parseInt(searchParams.get("limit") ?? "10");
+    const kategori = searchParams.get("kategori");
+    const search = searchParams.get("search");
 
-        // Filter berita based on parameters
-        let filteredBerita = mockBerita.filter((berita) => berita.status === "PUBLISHED");
+    let filteredBerita = mockBerita.filter((berita) => berita.status === "PUBLISHED");
 
-        if (kategori) {
-            filteredBerita = filteredBerita.filter(
-                (berita) => berita.kategori.toLowerCase() === kategori.toLowerCase()
-            );
-        }
-
-        if (search) {
-            const searchLower = search.toLowerCase();
-            filteredBerita = filteredBerita.filter(
-                (berita) =>
-                    berita.judul.toLowerCase().includes(searchLower) ||
-                    berita.ringkasan.toLowerCase().includes(searchLower) ||
-                    berita.konten.toLowerCase().includes(searchLower)
-            );
-        }
-
-        // Pagination
-        const total = filteredBerita.length;
-        const totalPages = Math.ceil(total / limit);
-        const startIndex = (page - 1) * limit;
-        const endIndex = startIndex + limit;
-        const berita = filteredBerita.slice(startIndex, endIndex);
-
-        const meta = {
-            total,
-            halaman: page,
-            perHalaman: limit,
-            totalHalaman: totalPages,
-        };
-
-        return NextResponse.json(createSuccessResponse(berita, "Daftar berita berhasil dimuat", meta));
-    } catch {
-        return NextResponse.json(createErrorResponse("INTERNAL_SERVER_ERROR", "Terjadi kesalahan saat memuat berita"), {
-            status: 500,
-        });
+    if (kategori) {
+        filteredBerita = filteredBerita.filter((berita) => berita.kategori.toLowerCase() === kategori.toLowerCase());
     }
-}
+
+    if (search) {
+        const searchLower = search.toLowerCase();
+        filteredBerita = filteredBerita.filter(
+            (berita) =>
+                berita.judul.toLowerCase().includes(searchLower) ||
+                berita.ringkasan.toLowerCase().includes(searchLower) ||
+                berita.konten.toLowerCase().includes(searchLower)
+        );
+    }
+
+    const total = filteredBerita.length;
+    const totalPages = Math.ceil(total / limit);
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const berita = filteredBerita.slice(startIndex, endIndex);
+
+    const meta = { total, halaman: page, perHalaman: limit, totalHalaman: totalPages };
+    return NextResponse.json(createSuccessResponse(berita, "Daftar berita berhasil dimuat", meta));
+});
 
 export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse>> {
     try {

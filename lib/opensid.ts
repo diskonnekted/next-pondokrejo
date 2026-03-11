@@ -121,7 +121,11 @@ function decodeHtmlEntities(text: string): string {
 // Base API function - now uses proxy to avoid CORS issues
 async function fetchFromOpenSID(_endpoint: string = "", params: Record<string, string> = {}) {
     // Use proxy API route to avoid CORS issues
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://pondokrejo.clasnet.co.id";
+    const baseUrl =
+        env.NEXTAUTH_URL ||
+        env.NEXT_PUBLIC_SITE_URL ||
+        // Fallback to local dev
+        "http://localhost:5091";
     const url = new URL("/api/opensid-proxy", baseUrl);
 
     // Add parameters if needed
@@ -204,15 +208,17 @@ function transformArticle(article: OpenSIDArticle) {
         ).toISOString();
     }
 
+    const derivedSlug = attributes.slug || (attributes.url_slug ? attributes.url_slug.split("/").pop() || attributes.url_slug : "");
+
     return {
         id: parseInt(article.id),
         title: decodeHtmlEntities(attributes.judul),
         content: attributes.isi, // Keep HTML for detail page rendering
         excerpt,
-        slug: attributes.slug, // Use the slug field
+        slug: derivedSlug,
         date: parseOpenSIDDate(attributes.tgl_upload),
         modified: parseOpenSIDDate(attributes.tgl_upload),
-        link: `/berita/${attributes.slug}`, // Internal link format
+        link: `/berita/${derivedSlug}`, // Internal link format
         status: attributes.enabled === "1" ? "publish" : "draft",
         readingTime: calculateReadingTime(attributes.isi),
 
@@ -341,8 +347,12 @@ export async function getPostBySlug(slug: string) {
         return null;
     }
 
-    // Find article by slug
-    const article = response.data.find((item: OpenSIDArticle) => item.attributes.slug === slug);
+    // Find article by slug (use attributes.slug if present, otherwise derive from url_slug)
+    const article = response.data.find((item: OpenSIDArticle) => {
+        const a = item.attributes;
+        const derived = a.slug || (a.url_slug ? a.url_slug.split("/").pop() || a.url_slug : "");
+        return derived === slug;
+    });
 
     if (!article) {
         console.error(`OpenSID: Post not found for slug "${slug}"`);

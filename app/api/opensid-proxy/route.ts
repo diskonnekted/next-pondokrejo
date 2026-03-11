@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { fetchOpenSIDArsip } from "@/lib/api-helpers";
+import { fetchOpenSIDArsip, createApiRouteHandler } from "@/lib/api-helpers";
 
 // Proxy API route to fetch from OpenSID (avoids CORS issues)
-export async function GET() {
+export const { GET, OPTIONS } = createApiRouteHandler(async () => {
     const response = await fetchOpenSIDArsip();
 
     if (!response.success) {
@@ -16,4 +16,4 @@ export async function GET() {
     const data = response.data as { data?: unknown[] };
     console.log(`OpenSID Proxy: Successfully fetched ${data?.data?.length || 0} articles`);
     return NextResponse.json(response.data);
-}
+});

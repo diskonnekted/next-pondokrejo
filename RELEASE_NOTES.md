@@ -76,4 +76,4 @@
 - ESLint memiliki sejumlah warning lama; tidak memblok build. Pertimbangkan perbaikan bertahap atau penyesuaian toleransi lint.
 - Next.js mengeluarkan peringatan konvensi “middleware” deprecated ke “proxy”. Rencana migrasi dapat dilakukan di rilis berikutnya.
 - Log build menunjukkan peringatan dev terkait prerender IoT; tidak memblok fungsionalitas utama portal.
-
+ - Klarifikasi ops/infra: Aplikasi tidak menggunakan database MariaDB; backup & recovery dikelola di sisi hosting server (di luar lingkup aplikasi).
