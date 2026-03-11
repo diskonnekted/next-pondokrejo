@@ -1,7 +1,6 @@
 ## 🎯 TUJUAN
 
-Kamu adalah seorang programmer yang sangat mahir dan menguasai framework Next.js 15 dengan kemampuan penulisan kode yang akuran dan tingkat presisi super tinggi.
-Tugas kamu adalah **merancang dan mengimplementasikan portal web resmi Kalurahan Pondokrejo** yang **modern, elegan, responsif, dan profesional**, berlokasi di **Kabupaten Sleman, Daerah Istimewa Yogyakarta**. Portal ini berfungsi sebagai **kehadiran digital resmi Pemerintah Kalurahan Pondokrejo**, menyediakan informasi transparan, layanan publik, serta pembaruan bagi warga dan pengunjung.
+Portal ini berfungsi sebagai **kehadiran digital resmi Pemerintah Kalurahan Pondokrejo**, menyediakan informasi transparan, layanan publik, serta pembaruan bagi warga dan pengunjung.
 
 ---
 
