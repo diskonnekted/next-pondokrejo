@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { auth } from "@/auth";
 
 const store: Map<string, { count: number; resetAt: number }> = new Map();
 
@@ -18,22 +17,11 @@ function getIp(req: NextRequest): string {
     return "0.0.0.0";
 }
 
-export default auth((req) => {
+export default function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
-
-    // Protect admin routes
-    if (pathname.startsWith("/admin")) {
-        if (!req.auth) {
-            const loginUrl = new URL("/login", req.url);
-            loginUrl.searchParams.set("callbackUrl", req.nextUrl.pathname + req.nextUrl.search);
-            return NextResponse.redirect(loginUrl);
-        }
-    }
-
-    // Rate limit API routes
     if (!pathname.startsWith("/api")) return NextResponse.next();
 
-    const ip = getIp(req as NextRequest);
+    const ip = getIp(req);
     const key = `${ip}:api`;
 
     const now = Date.now();
@@ -54,8 +42,8 @@ export default auth((req) => {
     entry.count += 1;
     store.set(key, entry);
     return NextResponse.next();
-});
+}
 
 export const config = {
-    matcher: ["/api/:path*", "/admin/:path*"],
+    matcher: ["/api/:path*"],
 };
