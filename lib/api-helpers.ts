@@ -247,15 +247,15 @@ export async function fetchOpenSIDPengaduan() {
  * Standard API route handler with CORS support
  */
 export function createApiRouteHandler(
-    handler: (request: NextRequest) => Promise<NextResponse>,
+    handler: (request: NextRequest, context?: unknown) => Promise<NextResponse>,
     options: { enableCORS?: boolean } = {}
 ) {
     const { enableCORS = true } = options;
 
     return {
-        async GET(request: NextRequest) {
+        async GET(request: NextRequest, context: unknown) {
             return withErrorHandling(async () => {
-                const response = await handler(request);
+                const response = await handler(request, context);
                 if (enableCORS) {
                     try {
                         response.headers.set("Access-Control-Allow-Origin", CORS_HEADERS["Access-Control-Allow-Origin"]);
@@ -267,9 +267,9 @@ export function createApiRouteHandler(
             });
         },
 
-        async POST(request: NextRequest) {
+        async POST(request: NextRequest, context: unknown) {
             return withErrorHandling(async () => {
-                const response = await handler(request);
+                const response = await handler(request, context);
                 if (enableCORS) {
                     try {
                         response.headers.set("Access-Control-Allow-Origin", CORS_HEADERS["Access-Control-Allow-Origin"]);
@@ -281,9 +281,9 @@ export function createApiRouteHandler(
             });
         },
 
-        async PUT(request: NextRequest) {
+        async PUT(request: NextRequest, context: unknown) {
             return withErrorHandling(async () => {
-                const response = await handler(request);
+                const response = await handler(request, context);
                 if (enableCORS) {
                     try {
                         response.headers.set("Access-Control-Allow-Origin", CORS_HEADERS["Access-Control-Allow-Origin"]);
@@ -295,9 +295,9 @@ export function createApiRouteHandler(
             });
         },
 
-        async DELETE(request: NextRequest) {
+        async DELETE(request: NextRequest, context: unknown) {
             return withErrorHandling(async () => {
-                const response = await handler(request);
+                const response = await handler(request, context);
                 if (enableCORS) {
                     try {
                         response.headers.set("Access-Control-Allow-Origin", CORS_HEADERS["Access-Control-Allow-Origin"]);

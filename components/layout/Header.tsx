@@ -78,6 +78,7 @@ export function Header() {
         { href: "/pustaka", label: "Perpustakaan Digital" },
         { href: "/lapak-digital", label: "Lapak Digital" },
         { href: "/ttg", label: "Teknologi Tepat Guna" },
+        { href: "/komunitas", label: "Komunitas" },
     ];
 
     // Categorized statistik sub-items

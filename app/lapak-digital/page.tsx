@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Store } from "lucide-react";
 
@@ -143,13 +144,7 @@ function LapakContent({ page }: { page: number }) {
                                     item.discountPrice !== item.price;
 
                                 return (
-                                    <a
-                                        key={item.id}
-                                        href={item.waUrl || "https://www.pondokrejo.sleman-desa.id/index.php/lapak"}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="block"
-                                    >
+                                    <Link key={item.id} href={`/lapak-digital/${item.id}`} className="block">
                                         <Card className="overflow-hidden hover:shadow-md transition h-full">
                                             <div className="aspect-[4/3] bg-gray-100 relative">
                                                 {photo ? (
@@ -190,7 +185,7 @@ function LapakContent({ page }: { page: number }) {
                                                 </div>
                                             </CardContent>
                                         </Card>
-                                    </a>
+                                    </Link>
                                 );
                             })}
                         </div>

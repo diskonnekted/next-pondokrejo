@@ -79,16 +79,22 @@ const nextConfig: NextConfig = {
                 pathname: '/assets/**',
             },
             {
+                protocol: 'https',
+                hostname: 'ttg.web.id',
+                port: '',
+                pathname: '/wp-content/uploads/**',
+            },
+            {
                 protocol: 'http',
                 hostname: 'www.pondokrejo.sleman-desa.id',
                 port: '',
-                pathname: '/storage-desa',
+                pathname: '/storage-desa/**',
             },
             {
                 protocol: 'https',
                 hostname: 'www.pondokrejo.sleman-desa.id',
                 port: '',
-                pathname: '/storage-desa',
+                pathname: '/storage-desa/**',
             },
             {
                 protocol: 'http',
@@ -118,13 +124,13 @@ const nextConfig: NextConfig = {
                 protocol: 'http',
                 hostname: 'pondokrejo.sleman-desa.id',
                 port: '',
-                pathname: '/storage-desa',
+                pathname: '/storage-desa/**',
             },
             {
                 protocol: 'https',
                 hostname: 'pondokrejo.sleman-desa.id',
                 port: '',
-                pathname: '/storage-desa',
+                pathname: '/storage-desa/**',
             },
             {
                 protocol: 'http',

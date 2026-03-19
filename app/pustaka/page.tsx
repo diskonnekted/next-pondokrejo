@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { BookOpen } from "lucide-react";
 
@@ -131,13 +132,7 @@ function PustakaContent({ page }: { page: number }) {
                     <div className="space-y-4">
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                             {books.map((book) => (
-                                <a
-                                    key={book.id}
-                                    href={book.detailUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="block"
-                                >
+                                <Link key={book.id} href={`/pustaka/${book.id}`} className="block">
                                     <Card className="overflow-hidden hover:shadow-md transition h-full">
                                         <div className="aspect-[2/3] bg-gray-100 relative">
                                             {book.coverUrl ? (
@@ -161,7 +156,7 @@ function PustakaContent({ page }: { page: number }) {
                                             <div className="text-xs text-gray-600 mt-1 truncate">{book.author || "—"}</div>
                                         </CardContent>
                                     </Card>
-                                </a>
+                                </Link>
                             ))}
                         </div>
 

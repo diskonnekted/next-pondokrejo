@@ -557,6 +557,27 @@ export function MobileNavigation() {
                                         {isActive("/ttg") && <div className="ml-auto w-2 h-2 bg-current rounded-full" />}
                                     </Link>
 
+                                    <Link
+                                        key="/komunitas"
+                                        href="/komunitas"
+                                        onClick={() => setIsSidebarOpen(false)}
+                                        className={`flex items-center gap-3 px-3 py-3 text-sm rounded-md transition-all duration-200 mb-1 cursor-pointer ${
+                                            isActive("/komunitas")
+                                                ? "bg-primary text-primary-foreground font-medium"
+                                                : "hover:bg-accent hover:text-accent-foreground"
+                                        }`}
+                                    >
+                                        <Users
+                                            className={`h-5 w-5 shrink-0 ${
+                                                isActive("/komunitas") ? "text-primary-foreground" : "text-primary"
+                                            }`}
+                                        />
+                                        <span className="truncate">Komunitas</span>
+                                        {isActive("/komunitas") && (
+                                            <div className="ml-auto w-2 h-2 bg-current rounded-full" />
+                                        )}
+                                    </Link>
+
                                     {/* Statistik Section Header */}
                                     <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-4">
                                         Statistik
