@@ -578,6 +578,27 @@ export function MobileNavigation() {
                                         )}
                                     </Link>
 
+                                    <Link
+                                        key="/analitik"
+                                        href="/analitik"
+                                        onClick={() => setIsSidebarOpen(false)}
+                                        className={`flex items-center gap-3 px-3 py-3 text-sm rounded-md transition-all duration-200 mb-1 cursor-pointer ${
+                                            isActive("/analitik")
+                                                ? "bg-primary text-primary-foreground font-medium"
+                                                : "hover:bg-accent hover:text-accent-foreground"
+                                        }`}
+                                    >
+                                        <BarChart3
+                                            className={`h-5 w-5 shrink-0 ${
+                                                isActive("/analitik") ? "text-primary-foreground" : "text-primary"
+                                            }`}
+                                        />
+                                        <span className="truncate">Analitik</span>
+                                        {isActive("/analitik") && (
+                                            <div className="ml-auto w-2 h-2 bg-current rounded-full" />
+                                        )}
+                                    </Link>
+
                                     {/* Statistik Section Header */}
                                     <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-4">
                                         Statistik

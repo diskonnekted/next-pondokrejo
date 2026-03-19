@@ -79,6 +79,7 @@ export function Header() {
         { href: "/lapak-digital", label: "Lapak Digital" },
         { href: "/ttg", label: "Teknologi Tepat Guna" },
         { href: "/komunitas", label: "Komunitas" },
+        { href: "/analitik", label: "Analitik" },
     ];
 
     // Categorized statistik sub-items
