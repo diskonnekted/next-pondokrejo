@@ -80,7 +80,7 @@ const nextConfig: NextConfig = {
             },
             {
                 protocol: 'https',
-                hostname: 'ttg.web.id',
+                hostname: 'ttg.pondokrejo.id',
                 port: '',
                 pathname: '/wp-content/uploads/**',
             },
