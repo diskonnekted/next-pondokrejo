@@ -127,7 +127,7 @@ async function fetchFromOpenSID(_endpoint: string = "", params: Record<string, s
             : env.NEXTAUTH_URL ||
               env.NEXT_PUBLIC_SITE_URL ||
               (env.VERCEL_URL ? `https://${env.VERCEL_URL}` : undefined) ||
-              "https://pondokrejo.clasnet.co.id";
+              "https://devoneclickpondokrejo.slemankab.go.id";
     const url = new URL("/api/opensid-proxy", baseUrl);
 
     // Add parameters if needed

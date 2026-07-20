@@ -1,14 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchSDGSDetail } from "@/lib/api-helpers";
+import { fetchSDGSDetail, createApiRouteHandler } from "@/lib/api-helpers";
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ goal: string }> }) {
-    const { goal: goalId } = await params;
+export const { GET, OPTIONS } = createApiRouteHandler(async (request: NextRequest, context?: unknown) => {
+    const ctxGoal = (context as { params?: { goal?: string } } | undefined)?.params?.goal;
+    const pathGoal = request.nextUrl.pathname.split("/").filter(Boolean).slice(-2, -1)[0]; // falls back if needed
+    const goalId = ctxGoal || pathGoal || "";
+
     const { searchParams } = new URL(request.url);
     const locationCode = searchParams.get("location_code") || "3404140004";
 
     // Validate goal ID
     if (!goalId || isNaN(parseInt(goalId)) || parseInt(goalId) < 1 || parseInt(goalId) > 18) {
         return NextResponse.json({ error: "Invalid goal ID. Must be between 1 and 18." }, { status: 400 });
+    }
+
+    // Validate location code
+    if (!/^\d+$/.test(locationCode)) {
+        return NextResponse.json({ error: "Parameter location_code tidak valid. Gunakan digit saja." }, { status: 400 });
     }
 
     let response;
@@ -29,22 +37,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         );
     }
 
-    return NextResponse.json(response.data, {
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET",
-            "Access-Control-Allow-Headers": "Content-Type",
-        },
-    });
-}
+    return NextResponse.json(response.data);
+});
 
-export async function OPTIONS() {
-    return new NextResponse(null, {
-        status: 200,
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type",
-        },
-    });
-}

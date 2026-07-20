@@ -517,7 +517,7 @@ export function useWebSocket(config: WebSocketConfig, handlers: WebSocketEventHa
  * Default WebSocket configuration for development
  */
 export const DEFAULT_WEBSOCKET_CONFIG: WebSocketConfig = {
-    url: env.NEXT_PUBLIC_WS_URL ?? "wss://pondokrejo.clasnet.co.id/ws",
+    url: env.NEXT_PUBLIC_WS_URL ?? "wss://devoneclickpondokrejo.slemankab.go.id/ws",
     reconnectAttempts: 5,
     reconnectInterval: 3000,
     heartbeatInterval: 30000,
@@ -528,7 +528,7 @@ export const DEFAULT_WEBSOCKET_CONFIG: WebSocketConfig = {
  * WebSocket configuration for production
  */
 export const PRODUCTION_WEBSOCKET_CONFIG: WebSocketConfig = {
-    url: env.NEXT_PUBLIC_WS_URL ?? "wss://pondokrejo.clasnet.co.id/ws",
+    url: env.NEXT_PUBLIC_WS_URL ?? "wss://devoneclickpondokrejo.slemankab.go.id/ws",
     reconnectAttempts: 10,
     reconnectInterval: 5000,
     heartbeatInterval: 60000,

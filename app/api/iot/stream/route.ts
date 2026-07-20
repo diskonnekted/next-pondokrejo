@@ -1,4 +1,5 @@
 import { fetchAllIoTData } from "@/lib/thingspeak";
+import { CORS_HEADERS } from "@/lib/api-service";
 
 const activeConnections: Set<ReadableStreamDefaultController> = new Set();
 
@@ -43,7 +44,7 @@ export async function GET() {
             "Content-Type": "text/event-stream",
             "Cache-Control": "no-cache",
             Connection: "keep-alive",
-            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Origin": CORS_HEADERS["Access-Control-Allow-Origin"],
             "Access-Control-Allow-Headers": "Cache-Control",
         },
     });

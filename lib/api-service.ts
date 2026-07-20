@@ -68,6 +68,23 @@ function normalizeUrl(url: string, baseUrl?: string): string {
     throw new Error("Invalid URL: must be absolute or provide baseUrl");
 }
 
+function stripLinksRecursively(obj: any): any {
+    if (Array.isArray(obj)) {
+        return obj.map(stripLinksRecursively);
+    }
+    if (typeof obj === 'object' && obj !== null) {
+        const result: any = {};
+        for (const key in obj) {
+            if (key === 'links') {
+                continue;
+            }
+            result[key] = stripLinksRecursively(obj[key]);
+        }
+        return result;
+    }
+    return obj;
+}
+
 /**
  * Main API Service class for external API requests
  */
@@ -136,12 +153,8 @@ export class ApiService {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
 
-                const data = await response.json();
-
-                // Strip 'links' property to prevent exposing internal backend URLs (VULN-04)
-                if (data && typeof data === 'object' && 'links' in data) {
-                    delete (data as any).links;
-                }
+                const rawData = await response.json();
+                const data = stripLinksRecursively(rawData);
 
                 return {
                     success: true,
