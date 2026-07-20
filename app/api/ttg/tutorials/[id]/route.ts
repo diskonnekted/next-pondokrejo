@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import * as cheerio from "cheerio";
 
 import { createApiRouteHandler } from "@/lib/api-helpers";
 
@@ -17,71 +18,14 @@ type TtgTutorialDetail = {
     url: string;
 };
 
-type WpPostDetail = {
-    id: number;
-    slug: string;
-    link: string;
-    date: string;
-    title: { rendered: string };
-    excerpt: { rendered: string };
-    content: { rendered: string };
-    _embedded?: {
-        author?: Array<{ name?: string }>;
-        "wp:featuredmedia"?: Array<{ source_url?: string }>;
-        "wp:term"?: Array<Array<{ taxonomy?: string; name?: string }>>;
-    };
-};
-
-const BASE_URL = "https://ttg.web.id";
-
-function toAbsoluteUrl(url: string): string {
-    return new URL(url, BASE_URL).toString();
-}
-
-function decodeHtml(text: string): string {
-    return text
-        .replace(/&amp;/g, "&")
-        .replace(/&quot;/g, '"')
-        .replace(/&#039;/g, "'")
-        .replace(/&hellip;/g, "…")
-        .replace(/&ndash;/g, "–")
-        .replace(/&mdash;/g, "—")
-        .replace(/&rsquo;/g, "’")
-        .replace(/&lsquo;/g, "‘")
-        .replace(/&ldquo;/g, "“")
-        .replace(/&rdquo;/g, "”")
-        .replace(/&lt;/g, "<")
-        .replace(/&gt;/g, ">")
-        .replace(/&nbsp;/g, " ")
-        .replace(/Â/g, "")
-        .replace(/â€¦/g, "…")
-        .replace(/â€“/g, "–")
-        .replace(/â€”/g, "—")
-        .replace(/â€™/g, "’")
-        .replace(/â€œ/g, "“")
-        .replace(/â€�/g, "”");
-}
-
-function normalizeText(text: string): string {
-    return decodeHtml(text).replace(/\s+/g, " ").trim();
-}
-
-function stripTags(html: string): string {
-    return html.replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<style[\s\S]*?<\/style>/gi, " ").replace(/<[^>]*>/g, " ");
-}
+const BASE_URL = "https://ttg.pondokrejo.id";
 
 function estimateReadTimeMinutes(html: string): string | null {
-    const text = normalizeText(stripTags(html));
+    const text = html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
     if (!text) return null;
     const words = text.split(/\s+/).filter(Boolean).length;
     const minutes = Math.max(1, Math.round(words / 200));
     return `${minutes} min`;
-}
-
-function formatDateId(dateIso: string): string | null {
-    const d = new Date(dateIso);
-    if (!Number.isFinite(d.getTime())) return null;
-    return d.toLocaleDateString("id-ID", { day: "2-digit", month: "long", year: "numeric" });
 }
 
 export const { GET, OPTIONS } = createApiRouteHandler(async (request: NextRequest, context?: unknown) => {
@@ -92,14 +36,15 @@ export const { GET, OPTIONS } = createApiRouteHandler(async (request: NextReques
     if (!id) return NextResponse.json({ success: false, error: "ID tutorial tidak valid" }, { status: 400 });
     if (!/^\d+$/.test(id)) return NextResponse.json({ success: false, error: "ID tutorial tidak valid" }, { status: 400 });
 
-    const res = await fetch(`${BASE_URL}/wp-json/wp/v2/posts/${encodeURIComponent(id)}?_embed=1`, {
+    const targetUrl = `${BASE_URL}/tutorial.php?id=${encodeURIComponent(id)}`;
+    
+    const res = await fetch(targetUrl, {
         method: "GET",
         headers: {
             "User-Agent":
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-            Accept: "application/json",
         },
-        next: { revalidate: 60 * 15, tags: ["ttg-webid", "ttg-webid-detail", `ttg-webid-${id}`] },
+        next: { revalidate: 60 * 15, tags: ["ttg-tutorials-detail", `ttg-${id}`] },
         signal: AbortSignal.timeout(30000),
     });
 
@@ -107,34 +52,33 @@ export const { GET, OPTIONS } = createApiRouteHandler(async (request: NextReques
         return NextResponse.json({ success: false, error: `Gagal mengambil konten TTG: HTTP ${res.status}` }, { status: res.status });
     }
 
-    const post = (await res.json()) as WpPostDetail;
+    const html = await res.text();
+    const $ = cheerio.load(html);
 
-    const title = normalizeText(stripTags(post.title?.rendered || ""));
-    if (!title) return NextResponse.json({ success: false, error: "Detail TTG tidak ditemukan" }, { status: 404 });
+    const title = $("h1").first().text().trim() || `Tutorial ${id}`;
+    let heroImageUrl = $(".relative.h-56 img").attr("src") || null;
+    if (heroImageUrl && !heroImageUrl.startsWith("http")) {
+        heroImageUrl = `${BASE_URL}${heroImageUrl.startsWith("/") ? "" : "/"}${heroImageUrl}`;
+    }
 
-    const author = post._embedded?.author?.[0]?.name ?? null;
-    const heroImageUrl = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ?? null;
-
-    const category =
-        post._embedded?.["wp:term"]
-            ?.flat()
-            ?.find((t) => t.taxonomy === "category" && t.name)?.name ?? null;
-
-    const contentHtml = post.content?.rendered ?? null;
-    const excerptHtml = post.excerpt?.rendered ?? null;
+    const category = $(".absolute.top-4.right-4 span").text().trim() || null;
+    const dateText = $(".absolute.bottom-0.left-0.right-0 p, .absolute.bottom-0.left-0.right-0 span").last().text().trim() || null;
+    
+    // Some cleaning of article content to make it display nicely
+    const contentHtml = $(".article-content").html() || null;
 
     const detail: TtgTutorialDetail = {
-        id: String(post.id),
-        slug: String(post.slug || ""),
+        id,
+        slug: id,
         title,
         category,
-        author,
+        author: "Admin TTG",
         readTime: contentHtml ? estimateReadTimeMinutes(contentHtml) : null,
         heroImageUrl,
-        dateText: formatDateId(post.date),
-        excerptHtml,
+        dateText,
+        excerptHtml: null,
         contentHtml,
-        url: post.link ? toAbsoluteUrl(post.link) : `${BASE_URL}/`,
+        url: targetUrl,
     };
 
     return NextResponse.json({ success: true, data: detail });
