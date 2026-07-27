@@ -71,7 +71,7 @@ export async function fetchOpenSIDStatistikById(
 export async function fetchOpenSIDArsip() {
     return opensidApi.get("/internal_api/arsip", {
         cache: {
-            revalidate: 60 * 60, // 1 hour
+            revalidate: 60, // 60 seconds
             tags: ["opensid-data-proxy"],
         },
     });

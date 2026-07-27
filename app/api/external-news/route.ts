@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { fetchOpenSIDArsip, createApiRouteHandler } from "@/lib/api-helpers";
 
 // Type definitions for OpenSID article structure
@@ -249,8 +249,10 @@ function parseOpenSIDDate(dateStr: string): string {
     ).toISOString();
 }
 
-export const { GET, OPTIONS } = createApiRouteHandler(async () => {
+export const { GET, OPTIONS } = createApiRouteHandler(async (request: NextRequest) => {
     try {
+        // Access searchParams to force dynamic evaluation at runtime
+        const _dynamicTrigger = request.nextUrl.searchParams.get("_t");
         const response = await fetchOpenSIDArsip();
 
         if (!response.success || !response.data) {
@@ -274,7 +276,7 @@ export const { GET, OPTIONS } = createApiRouteHandler(async () => {
         };
 
         // Transform OpenSID data to match expected format for homepage
-        const transformedPosts = articles.slice(0, 10).map((article: OpenSIDArticle) => {
+        const transformedPosts = articles.map((article: OpenSIDArticle) => {
             const attributes = article.attributes;
             const derivedSlug = attributes.slug || (attributes.url_slug ? attributes.url_slug.split("/").pop() || attributes.url_slug : "");
 
@@ -316,10 +318,15 @@ export const { GET, OPTIONS } = createApiRouteHandler(async () => {
             };
         });
 
+        // Sort by date (newest first) and take the top 20
+        const sortedPosts = transformedPosts
+            .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+            .slice(0, 20);
+
         return NextResponse.json({
             success: true,
-            data: transformedPosts,
-            total: transformedPosts.length,
+            data: sortedPosts,
+            total: sortedPosts.length,
         });
     } catch (error) {
         console.error("Error fetching OpenSID news:", error);

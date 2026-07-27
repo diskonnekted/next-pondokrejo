@@ -53,7 +53,7 @@ export function useExternalNews(limit: number = 10) {
             setLoading(true);
             setError(null);
 
-            const response = await fetch("/api/external-news");
+            const response = await fetch("/api/external-news", { cache: "no-store" });
             const data: NewsResponse = await response.json();
 
             if (data.success) {

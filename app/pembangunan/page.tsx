@@ -27,6 +27,22 @@ import { cn } from "@/lib/utils";
 import { PembangunanDataLoading } from "@/components/ui/custom/PembangunanDataLoading";
 import { PembangunanDataNotAvailable } from "@/components/ui/custom/PembangunanDataNotAvailable";
 
+const hasRealFoto = (fotoUrl: string): boolean => {
+    if (!fotoUrl) return false;
+    try {
+        if (fotoUrl.startsWith("http://") || fotoUrl.startsWith("https://")) {
+            const url = new URL(fotoUrl);
+            const path = url.searchParams.get("path");
+            if (url.pathname.includes("storage-desa")) {
+                return !!(path && path.trim() !== "" && !path.includes("404-image-not-found"));
+            }
+        }
+        return !fotoUrl.includes("404-image-not-found");
+    } catch (e) {
+        return !fotoUrl.includes("404-image-not-found");
+    }
+};
+
 interface PembangunanProject {
     type: string;
     id: string;
@@ -371,7 +387,7 @@ export default function PembangunanPage() {
                                     onClick={() => setSelectedProject(project)}
                                 >
                                     <div className="relative h-48 bg-linear-to-br from-gray-100 to-gray-200">
-                                        {attrs.foto && !attrs.foto.includes("404-image-not-found") ? (
+                                        {hasRealFoto(attrs.foto) ? (
                                             <Image
                                                 src={attrs.foto}
                                                 alt={attrs.judul}

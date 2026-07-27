@@ -85,6 +85,25 @@ interface ApiResponse {
     data: WilayahAdministratif[];
 }
 
+const getDusunImage = (dusunName: string): string => {
+    const images: Record<string, string> = {
+        "Balan": "/uploads/balan.jpg",
+        "Banjarharjo": "/uploads/banjarharjo.jpeg",
+        "Dukuh": "/uploads/dukuh.jpeg",
+        "Glagahombo": "/uploads/glagahombo.jpeg",
+        "Jlapan": "/uploads/jlapan.jpg",
+        "Jlopo": "/uploads/jlopo.jpeg",
+        "Karanglo": "/uploads/karanglo.jpeg",
+        "Ngentak": "/uploads/ngentak.png",
+        "Plotengan": "/uploads/plotengan.jpeg",
+        "Watupecah": "/uploads/watupecah.jpeg",
+        "Mlesen": "/uploads/mlesen.jpg",
+        "Badalan": "/uploads/badalan.jpeg",
+        "Jenengan": "/uploads/jenengan.jpg",
+    };
+    return images[dusunName] || "/uploads/sliders/desa.avif";
+};
+
 export default function WilayahAdministratifPage() {
     const [wilayahData, setWilayahData] = useState<WilayahAdministratif[]>([]);
     const [loading, setLoading] = useState(true);
@@ -314,20 +333,23 @@ export default function WilayahAdministratifPage() {
                             return (
                                 <Card
                                     key={dusun.id}
-                                    className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer pt-0"
+                                    className="overflow-hidden hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 border border-gray-100 cursor-pointer pt-0 flex flex-col h-full bg-white group rounded-xl"
                                     onClick={() => setSelectedDusun(dusun)}
                                 >
-                                    <div className="relative h-48 bg-linear-to-br from-blue-100 to-blue-200">
-                                        <div className="absolute inset-0 flex items-center justify-center">
-                                            <MapPin className="h-16 w-16 text-blue-300" />
-                                        </div>
-                                        <div className="absolute top-3 right-3">
-                                            <Badge className="bg-blue-600 hover:bg-blue-700">
+                                    <div className="relative h-48 w-full overflow-hidden">
+                                        <img 
+                                            src={getDusunImage(attrs.dusun)} 
+                                            alt={attrs.dusun}
+                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                                        <div className="absolute top-3 right-3 z-10">
+                                            <Badge className="bg-blue-600/90 text-white font-medium border-0 px-2.5 py-0.5 rounded-md">
                                                 {attrs.sebutan_dusun}
                                             </Badge>
                                         </div>
-                                        <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
-                                            <span className="text-sm font-semibold text-gray-900">
+                                        <div className="absolute bottom-3 left-3 z-10 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full shadow-xs">
+                                            <span className="text-xs font-semibold text-gray-900">
                                                 {attrs.rws_count} RW, {attrs.rts_count} RT
                                             </span>
                                         </div>
@@ -397,26 +419,33 @@ export default function WilayahAdministratifPage() {
                 {/* Dusun Detail Modal */}
                 {selectedDusun && (
                     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                        <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-                            <div className="sticky top-0 bg-white border-b p-4 flex items-center justify-between">
-                                <h2 className="text-2xl font-bold">Detail Wilayah</h2>
-                                <Button variant="ghost" onClick={() => setSelectedDusun(null)} className="rounded-full">
+                        <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto overflow-hidden">
+                            <div className="relative h-64 w-full overflow-hidden">
+                                <img 
+                                    src={getDusunImage(selectedDusun.attributes.dusun)} 
+                                    alt={selectedDusun.attributes.dusun}
+                                    className="w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                                <div className="absolute bottom-4 left-6 z-10 text-white">
+                                    <Badge className="bg-blue-600/90 text-white font-medium mb-2 border-0">
+                                        {selectedDusun.attributes.sebutan_dusun}
+                                    </Badge>
+                                    <h3 className="text-3xl font-bold">
+                                        {selectedDusun.attributes.dusun}
+                                    </h3>
+                                </div>
+                                <Button 
+                                    variant="ghost" 
+                                    onClick={() => setSelectedDusun(null)} 
+                                    className="absolute top-4 right-4 rounded-full bg-black/40 hover:bg-black/60 text-white! h-10 w-10 p-0 flex items-center justify-center cursor-pointer z-20 border-0"
+                                >
                                     ✕
                                 </Button>
                             </div>
 
                             <div className="p-6">
                                 <div className="mb-6">
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div>
-                                            <h3 className="text-2xl font-bold mb-2">
-                                                {selectedDusun.attributes.dusun}
-                                            </h3>
-                                            <Badge className="bg-blue-600 hover:bg-blue-700 mb-2">
-                                                {selectedDusun.attributes.sebutan_dusun}
-                                            </Badge>
-                                        </div>
-                                    </div>
 
                                     {selectedDusun.attributes.kepala_nama && (
                                         <div className="bg-blue-50 p-4 rounded-lg mb-4">
