@@ -44,14 +44,14 @@ export default function NewsSidebar({ currentCategory, currentTag, className = "
 
                 // Import OpenSID library
                 const opensid = await import("@/lib/opensid");
-                const [popularData, categoriesData, tagsData, archivesData] = await Promise.all([
-                    opensid.getPopularPosts(10),
+                const [recentPostsData, categoriesData, tagsData, archivesData] = await Promise.all([
+                    opensid.getPosts(1, 10),
                     opensid.getCategories(),
                     opensid.getTags(),
                     opensid.getArchiveDates(),
                 ]);
 
-                setPopularPosts((popularData as Post[]) ?? []);
+                setPopularPosts((recentPostsData as { posts?: Post[] })?.posts ?? []);
                 setCategories((categoriesData as Category[]) ?? []);
                 setTags((tagsData as TagType[])?.slice(0, 10) ?? []); // Hanya 10 tags pertama
                 setArchives((archivesData as Array<ArchiveDate>)?.slice(0, 12) ?? []); // Hanya 12 bulan terakhir
@@ -85,8 +85,8 @@ export default function NewsSidebar({ currentCategory, currentTag, className = "
                 <CardHeader className="cursor-pointer sm:cursor-default" onClick={() => toggleSection("popular")}>
                     <CardTitle className="flex items-center justify-between text-lg">
                         <div className="flex items-center gap-2">
-                            <TrendingUp className="h-5 w-5 text-primary" />
-                            Berita Populer
+                            <Calendar className="h-5 w-5 text-primary" />
+                            Berita Terkini
                         </div>
                         <div className="sm:hidden">
                             {expandedSections.popular ? (
@@ -137,7 +137,7 @@ export default function NewsSidebar({ currentCategory, currentTag, className = "
                             ))}
                         </div>
                     ) : (
-                        <p className="text-sm text-muted-foreground">Belum ada berita populer</p>
+                        <p className="text-sm text-muted-foreground">Belum ada berita terkini</p>
                     )}
                 </CardContent>
             </Card>
