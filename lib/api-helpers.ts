@@ -68,8 +68,9 @@ export async function fetchOpenSIDStatistikById(
 /**
  * OpenSID arsip/berita API helper
  */
-export async function fetchOpenSIDArsip() {
-    return opensidApi.get("/internal_api/arsip", {
+export async function fetchOpenSIDArsip(page?: number) {
+    const endpoint = page ? `/internal_api/arsip?page[number]=${page}` : "/internal_api/arsip";
+    return opensidApi.get(endpoint, {
         cache: {
             revalidate: 60, // 60 seconds
             tags: ["opensid-data-proxy"],

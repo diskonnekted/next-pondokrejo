@@ -253,14 +253,32 @@ export const { GET, OPTIONS } = createApiRouteHandler(async (request: NextReques
     try {
         // Access searchParams to force dynamic evaluation at runtime
         const _dynamicTrigger = request.nextUrl.searchParams.get("_t");
-        const response = await fetchOpenSIDArsip();
+        const firstPageResponse = await fetchOpenSIDArsip(1);
 
-        if (!response.success || !response.data) {
-            throw new Error(response.message || "Gagal mengambil data OpenSID");
+        if (!firstPageResponse.success || !firstPageResponse.data) {
+            throw new Error(firstPageResponse.message || "Gagal mengambil data OpenSID");
         }
 
-        const raw = response.data as { data?: OpenSIDArticle[] };
-        const articles = raw.data ?? [];
+        const rawFirstPage = firstPageResponse.data as { data?: OpenSIDArticle[]; meta?: any };
+        let articles = rawFirstPage.data ?? [];
+
+        // Check if there are more pages and fetch them in parallel
+        const totalPages = rawFirstPage.meta?.pagination?.total_pages || 1;
+        if (totalPages > 1) {
+            const pagePromises = [];
+            for (let p = 2; p <= totalPages; p++) {
+                pagePromises.push(fetchOpenSIDArsip(p));
+            }
+            const pageResponses = await Promise.all(pagePromises);
+            for (const pageRes of pageResponses) {
+                if (pageRes.success && pageRes.data) {
+                    const rawPage = pageRes.data as { data?: OpenSIDArticle[] };
+                    if (rawPage.data) {
+                        articles = articles.concat(rawPage.data);
+                    }
+                }
+            }
+        }
 
         const siteBaseUrl = "https://pondokrejo.sleman-desa.id";
 
