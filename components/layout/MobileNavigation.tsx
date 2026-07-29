@@ -566,8 +566,8 @@ export function MobileNavigation() {
                                     </Link>
 
                                     <a
-                                        key="https://web-komunitas.vercel.app/https://web-komunitas.vercel.app/"
-                                        href="https://web-komunitas.vercel.app/https://web-komunitas.vercel.app/"
+                                        key="https://web-komunitas.vercel.app/"
+                                        href="https://web-komunitas.vercel.app/"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         onClick={() => setIsSidebarOpen(false)}
